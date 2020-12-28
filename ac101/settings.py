@@ -152,23 +152,6 @@ LOGGING = {
         },
     },
 }
-LOGGING = {
-    ‘disable_existing_loggers’: False,
-    ‘version’: 1,
-    ‘handlers’: {
-        ‘console’: {
-            ‘class’: ‘logging.StreamHandler’,
-            ‘level’: ‘DEBUG’,
-        },
-    },
-    ‘loggers’: {
-        ‘django.db.backends’: {
-            ‘handlers’: [‘console’],
-            ‘level’: ‘DEBUG’,
-            ‘propagate’: False,
-        },
-    },
-}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
