@@ -28,7 +28,7 @@ class User(models.Model):
     "https://image.ohou.se/i/bucketplace-v2-development/uploads/default_images/avatar.png?gif=1&w=144&h=144&c=c&webp=1", null=True)
     grade         = models.ForeignKey(UserGrade, on_delete=models.CASCADE, null=True, default=1)
     platform      = models.ForeignKey(Platform, on_delete=models.CASCADE, null=True)
-    number        = models.CharField(max_length=11,null=True, unique=True)
+    number        = models.CharField(max_length=11, null=True, unique=True)
     created_at    = models.DateTimeField(auto_now_add=True)
     updated_at    = models.DateTimeField(auto_now=True)
     
@@ -40,7 +40,7 @@ class User(models.Model):
 
 class PhoneVerification(models.Model):
     user  = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    phone = models.CharField(unique=True, max_length= 11)
+    phone = models.CharField(unique=True, max_length=11)
     code  = models.CharField(max_length=6)
     
     class Meta:
@@ -51,7 +51,7 @@ class ApplyPath(models.Model):
     reason          = models.CharField(max_length=20)
     specific_reason = models.CharField(max_length=150, null=True)
     recommender     = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    
+
     class Meta:
         db_table = 'apply_paths'
 

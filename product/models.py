@@ -14,6 +14,7 @@ class Category(models.Model):
 
     class Meta:
         db_table = 'categories'
+
     def __str__(self):
         return self.name
 
@@ -24,6 +25,7 @@ class SubCategory(models.Model):
 
     class Meta:
         db_table = 'sub_categories'
+
     def __str__(self):
         return self.name
 
@@ -33,6 +35,7 @@ class CourseLevel(models.Model):
 
     class Meta:
         db_table = 'course_levels'
+
     def __str__(self):
         return self.name
 
@@ -47,6 +50,7 @@ class Product(models.Model):
 
     class Meta:
         db_table = 'products'
+
     def __str__(self):
         return self.name
 
@@ -73,6 +77,7 @@ class CourseStatus(models.Model):
 
     class Meta:
         db_table = 'course_status'
+
     def __str__(self):
         return self.name
 
@@ -87,6 +92,7 @@ class Course(models.Model):
 
     class Meta:
         db_table = 'courses'
+
     def __str__(self):
         return self.course_status
 
@@ -127,6 +133,7 @@ class CourseMaterial(models.Model):
 
     class Meta:
         db_table = 'course_materials'
+
     def __str__(self):
         return self.name
 
