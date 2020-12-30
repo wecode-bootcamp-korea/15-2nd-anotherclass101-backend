@@ -6,6 +6,17 @@ class Tag(models.Model):
 
     class Meta:
         db_table = 'tags'
+
+    def __str__(self):
+        return self.name
+
+
+class RequestFormStatus(models.Model):
+    name = models.CharField(max_length=20)
+
+    class Meta:
+        db_table = 'request_form_status'
+
     def __str__(self):
         return self.name
 
@@ -30,9 +41,10 @@ class CourseRequest(models.Model):
     tag                 = models.ManyToManyField(Tag)
     liker               = models.ManyToManyField(User, related_name='liked_requests')
     form_status         = models.ManyToManyField(RequestFormStatus)
-    
+
     class Meta:
         db_table = 'course_requests'
+
     def __str__(self):
         return self.name
 
@@ -61,5 +73,6 @@ class RequestCurriculum(models.Model):
     
     class Meta:
         db_table = 'request_curriculums'
+
     def __str__(self):
         return self.name
