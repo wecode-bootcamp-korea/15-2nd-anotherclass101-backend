@@ -48,7 +48,7 @@ class CourseLevel(models.Model):
 
 class Product(models.Model):
     name          = models.CharField(max_length=45)
-    price         = models.DecimalField(decimal_places=2)
+    price         = models.DecimalField(decimal_places=2,max_digits=20)
     sub_category  = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
     product_type  = models.ForeignKey(ProductTypes, on_delete=models.CASCADE)
     refund_policy = models.CharField(max_length=200, null=True)
@@ -133,7 +133,7 @@ class CourseFaq(models.Model):
 class CourseMaterial(models.Model):
     course  = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     name    = models.CharField(max_length=45, null=True)
-    price   = models.DecimalField(decimal_places=2)
+    price   = models.DecimalField(decimal_places=2,max_digits=20)
     maximum = models.IntegerField(null=True)
 
     class Meta:
