@@ -1,15 +1,6 @@
 from django.db import models
 
 
-class ProductTypes(models.Model):
-    name = models.CharField(max_length=20)
-
-    class Meta:
-        db_table = 'product_types'
-    def __str__(self):
-        return self.name
-
-
 class Goods(models.Model):
     description   = models.CharField(max_length=150)
     delivery_info = models.CharField(max_length=150)
@@ -47,12 +38,12 @@ class CourseLevel(models.Model):
 
 
 class Product(models.Model):
-    name          = models.CharField(max_length=45)
-    price         = models.DecimalField(decimal_places=2,max_digits=20)
-    sub_category  = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
-    product_type  = models.ForeignKey(ProductTypes, on_delete=models.CASCADE)
-    refund_policy = models.CharField(max_length=200, null=True)
-    liker         = models.ManyToManyField('user.User', through='ProductLike', related_name='liked_products')
+    name                = models.CharField(max_length=45, null=True)
+    creator             = models.ForeignKey('user.Creator', on_delete=models.CASCADE)
+    price               = models.DecimalField(decimal_places=2,max_digits=20, null=True)
+    sub_category        = models.ForeignKey(SubCategory, on_delete=models.CASCADE, default=1)
+    refund_policy       = models.CharField(max_length=200, null=True)
+    liker               = models.ManyToManyField('user.User', through='ProductLike', related_name='liked_products')
 
     class Meta:
         db_table = 'products'
@@ -87,19 +78,17 @@ class CourseStatus(models.Model):
 
 
 class Course(models.Model):
-    curriculum          = models.CharField(max_length=45)
-    class_status        = models.ForeignKey(CourseStatus, on_delete=models.CASCADE)
+    course_status       = models.ForeignKey(CourseStatus, on_delete=models.CASCADE)
+    creator_description = models.CharField(max_length=200, null=True)
     kit_description     = models.CharField(max_length=200, null=True)
-    benefit             = models.CharField(max_length=100)
-    creator             = models.ForeignKey('user.Creator', on_delete=models.CASCADE)
-    creator_description = models.CharField(max_length=200)
+    benefit             = models.CharField(max_length=100, null=True)
     product             = models.ForeignKey(Product, on_delete=models.CASCADE)
-    level               = models.ForeignKey(CourseLevel, on_delete=models.CASCADE)
+    level               = models.ForeignKey(CourseLevel, on_delete=models.CASCADE, default=1)
 
     class Meta:
         db_table = 'courses'
     def __str__(self):
-        return self.curriculum
+        return self.course_status
 
 
 class Like(models.Model):
