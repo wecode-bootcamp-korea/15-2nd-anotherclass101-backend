@@ -9,9 +9,9 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
-from my_settings import DATABASES, SECRET
+from my_settings import DATABASES, SECRET, AWS_KEY_ID, AWS_ACCESS_KEY, AWS_BUCKET_NAME
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'community',
     'request',
     'curriculum',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -158,7 +159,35 @@ LOGGING = {
     },
 }
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+if DEBUG:
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage' 
+
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+else:
+    # AWS Setting
+    AWS_REGION = 'us-east-2'
+    AWS_STORAGE_BUCKET_NAME = AWS_BUCKET_NAME 
+    AWS_QUERYSTRING_AUTH = False
+    AWS_S3_HOST = 's3.%s.amazonaws.com' % AWS_REGION
+    AWS_ACCESS_KEY_ID = AWS_KEY_ID 
+    AWS_SECRET_ACCESS_KEY = AWS_ACCESS_KEY 
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+    # Static Setting
+    STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    STATICFILES_LOCATION = 'static'
+
+    #Media Setting
+    MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    MEDIAFILES_LOCATION  = 'media'
