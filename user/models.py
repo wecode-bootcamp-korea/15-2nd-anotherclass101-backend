@@ -40,7 +40,7 @@ class User(models.Model):
 
 class PhoneVerification(models.Model):
     user  = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    phone = models.IntegerField(unique=True)
+    phone = models.CharField(unique=True, max_length= 11)
     code  = models.CharField(max_length=6)
     
     class Meta:

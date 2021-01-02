@@ -14,21 +14,14 @@ def id_auth(func):
             payload      = jwt.decode(access_token, SECRET, algorithms = ALGORITHM)
             user         = User.objects.get(id = payload["id"])
             request.user = user
-            
-
             return func(self, request, *args, **kwargs)
 
         except jwt.DecodeError:
             return JsonResponse({"MESSAGE": "INVALID_TOKEN"}, status=401)
-
         except jwt.InvalidTokenError:
             return JsonResponse({'MESSAGE': 'INVALID_ACCESS_TOKEN'}, status=401)
-
         except jwt.ExpiredSignatureError:
             return JsonResponse({"message": "EXPIRED_TOKEN"}, status=401)
-
         except User.DoesNotExist:
             return JsonResponse({"MESSAGE": "INVALID_USER"}, status=401)
-
     return wrapper
-

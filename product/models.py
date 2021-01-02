@@ -41,7 +41,7 @@ class Product(models.Model):
     name                = models.CharField(max_length=45, null=True)
     creator             = models.ForeignKey('user.Creator', on_delete=models.CASCADE)
     price               = models.DecimalField(decimal_places=2,max_digits=20, null=True)
-    sub_category        = models.ForeignKey(SubCategory, on_delete=models.CASCADE, default=1)
+    sub_category        = models.ForeignKey(SubCategory, default=1, on_delete=models.CASCADE)
     refund_policy       = models.CharField(max_length=200, null=True)
     liker               = models.ManyToManyField('user.User', through='ProductLike', related_name='liked_products')
 
@@ -83,7 +83,7 @@ class Course(models.Model):
     kit_description     = models.CharField(max_length=200, null=True)
     benefit             = models.CharField(max_length=100, null=True)
     product             = models.ForeignKey(Product, on_delete=models.CASCADE)
-    level               = models.ForeignKey(CourseLevel, on_delete=models.CASCADE, default=1)
+    level               = models.ForeignKey(CourseLevel, default=1, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'courses'

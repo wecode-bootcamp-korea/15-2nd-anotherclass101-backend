@@ -45,4 +45,3 @@ class SubCurriculumCommentReply(models.Model):
 
     class Meta:
         db_table = 'sub_curriculum_comment_replies'
-

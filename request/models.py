@@ -1,5 +1,5 @@
 from django.db      import models
-from product.models import Course, SubCategory
+from product.models import Course
 from user.models    import User
 class Tag(models.Model):
     name = models.CharField(max_length=30)
@@ -12,7 +12,7 @@ class Tag(models.Model):
 
 class RequestFormStatus(models.Model):
     name = models.CharField(max_length=20)
-    
+
     class Meta:
         db_table = 'request_form_status'
     def __str__(self):
