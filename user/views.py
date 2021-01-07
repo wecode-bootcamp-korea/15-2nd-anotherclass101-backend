@@ -7,20 +7,26 @@ import hmac
 import base64
 import requests
 import time
+import boto3
+import uuid
+
 from random import randint
+from datetime import datetime, timedelta
 
 from django.views import View
-from django.http import JsonResponse, HttpResponse
+from django.http  import JsonResponse, HttpResponse
 
-from datetime import datetime, timedelta
-from .models import User, PhoneVerification
+from .models     import User, PhoneVerification
+from .utils      import id_auth
 from my_settings import (
-    serviceId,
-    AUTH_SECRET_KEY,
-    AUTH_ACCESS_KEY,
-    SMS_SEND_PHONE_NUMBER,
-    SECRET,
-    ALGORITHM,
+                            serviceId,
+                            AUTH_SECRET_KEY,
+                            AUTH_ACCESS_KEY,
+                            SMS_SEND_PHONE_NUMBER,
+                            SECRET,
+                            ALGORITHM,
+                            AWS_ACCESS_KEY_ID,
+                            AWS_SECRET_ACCESS_KEY,
 )
 
 
@@ -164,8 +170,11 @@ class SMSVerificationView(View):
             )
             return JsonResponse({'message': 'SUCCESS'}, status=201)
 
-        except KeyError:
-            return JsonResponse({'message': 'KEY_ERROR'}, status=400)
+        except KeyError as e:
+            return JsonResponse({'message': f'KEY_ERROR: =>  {e}'}, status=400)
+
+        except ValueError as e:
+            return JsonResponse({'message': f'VALUE_ERROR: =>  {e}'}, status=400)
 
 
 class SMSVerificationConfirmView(View):
@@ -219,3 +228,85 @@ class KakaoSignInView(View):
 
         except ValueError as e:
             return JsonResponse({'message': f'VALUE_ERROR: =>  {e}'}, status=400)
+
+
+class ProfileView(View):
+
+    #@id_auth
+    def post(self, request):
+        data = json.loads(request.body)
+
+        #user = request.user
+        user_id = 11
+        name           = data['name']
+        nickname       = data['nickname']
+
+        try:
+            User.objects.filter(id = user_id).update(
+                name          = name,
+                nickname      = nickname,
+            )
+
+            return JsonResponse({'message': "SUCCESS"}, status=201)
+
+        except KeyError as e:
+            return JsonResponse({'message': f'KEY_ERROR: =>  {e}'}, status=400)
+
+        except ValueError as e:
+            return JsonResponse({'message': f'VALUE_ERROR: =>  {e}'}, status=400)
+
+
+class ProfileDataView(View):
+
+    @id_auth
+    def get(self,request):
+        user = request.user
+        db_user = User.objects.get(id = user.id)
+        try:
+            result = {
+                "name"     : db_user.name,
+                "nickname" : db_user.nickname,
+                "image"    : db_user.profile_image,
+                "email"    : db_user.email,
+                "phone"    : db_user.number,
+            }
+
+            return JsonResponse({'result': result}, status=200)
+
+        except KeyError as e:
+            return JsonResponse({'message': f'KEY_ERROR: =>  {e}'}, status=400)
+
+        except ValueError as e:
+            return JsonResponse({'message': f'VALUE_ERROR: =>  {e}'}, status=400)
+
+
+class ProfileImageView(View):
+
+    s3_client = boto3.client(
+        's3',
+        aws_access_key_id     = AWS_ACCESS_KEY_ID,
+        aws_secret_access_key = AWS_SECRET_ACCESS_KEY
+    )
+
+    @id_auth
+    def post(self, request):
+        user = request.user
+        file  = request.FILES['file']
+
+        if file:
+            filename = str(uuid.uuid1()).replace('-','')
+            self.s3_client.upload_fileobj(
+                file,
+                'ac101',
+                filename,
+                ExtraArgs = {
+                    'ContentType': 'image/jpeg'
+                }
+            )
+            file_url = f"https://s3.ap-northeast-2.amazonaws.com/ac101/{filename}"
+
+            User.objects.filter(id = user.id).update(
+                profile_image = file_url
+            )
+
+            return JsonResponse({'message': 'SUCCESS'}, status=200)

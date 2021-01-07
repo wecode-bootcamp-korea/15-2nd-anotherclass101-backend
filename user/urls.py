@@ -6,6 +6,9 @@ from user.views import (
                             SMSVerificationView,
                             SMSVerificationConfirmView,
                             KakaoSignInView,
+                            ProfileView,
+                            ProfileImageView,
+                            ProfileDataView,
                         )
 
 urlpatterns = [
@@ -14,4 +17,7 @@ urlpatterns = [
     path('/sms', SMSVerificationView.as_view()),
     path('/sms_verification', SMSVerificationConfirmView.as_view()),
     path('/kakao', KakaoSignInView.as_view()),
+    path('/profile', ProfileView.as_view()),
+    path('/profileimage', ProfileImageView.as_view()),
+    path('/profiledata', ProfileDataView.as_view()),
 ]

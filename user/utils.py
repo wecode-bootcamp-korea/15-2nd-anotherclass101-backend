@@ -31,3 +31,4 @@ def id_auth(func):
             return JsonResponse({'MESSAGE': 'INVALID_USER'}, status=401)
 
     return wrapper
+
