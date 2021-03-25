@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'storages',
 ]
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
